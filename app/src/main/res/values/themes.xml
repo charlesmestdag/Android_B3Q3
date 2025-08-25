@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Theme.GestionPointsEtudiants" parent="Theme.AppCompat.DayNight.DarkActionBar">
+        <item name="colorPrimary">@color/blue_primary</item>
+        <item name="colorPrimaryVariant">@color/blue_dark</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorAccent">@color/orange_accent</item>
+        <item name="android:windowBackground">@color/light_gray_background</item>
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/gray_medium</item>
+        <item name="android:buttonStyle">@style/CustomButton</item>
+        <item name="android:editTextStyle">@style/CustomEditText</item>
+        <item name="android:textViewStyle">@style/CustomTextView</item>
+    </style>
+    
+    <!-- Style personnalisé pour les boutons -->
+    <style name="CustomButton" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/button_rounded</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:layout_marginTop">8dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
+    </style>
+    
+    <!-- Style pour les boutons de suppression -->
+    <style name="CustomButton.Delete" parent="CustomButton">
+        <item name="android:background">@drawable/button_delete_rounded</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    
+    <!-- Style pour les boutons secondaires -->
+    <style name="CustomButton.Secondary" parent="CustomButton">
+        <item name="android:background">@drawable/button_secondary_rounded</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:minHeight">40dp</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+    
+    <!-- Style pour les EditText -->
+    <style name="CustomEditText" parent="Widget.AppCompat.EditText">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textColorHint">@color/gray_medium</item>
+        <item name="android:background">@drawable/card_background</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:textCursorDrawable">@color/white</item>
+    </style>
+    
+    <!-- Style pour les TextView -->
+    <style name="CustomTextView" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <!-- Style pour les boutons positifs des dialogues (Valider, Enregistrer, etc.) -->
+    <style name="DialogButton.Positive" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/blue_button</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:minWidth">80dp</item>
+    </style>
+
+    <!-- Style pour les boutons négatifs des dialogues (Annuler, etc.) -->
+    <style name="DialogButton.Negative" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/red_button</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:minWidth">80dp</item>
+    </style>
+
+    <!-- Style pour les boutons neutres des dialogues (Supprimer, etc.) -->
+    <style name="DialogButton.Neutral" parent="Widget.AppCompat.Button">
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/orange_button</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_margin">8dp</item>
+        <item name="android:minWidth">80dp</item>
+    </style>
+</resources>

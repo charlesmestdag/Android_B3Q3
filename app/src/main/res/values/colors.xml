@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Couleurs originales -->
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    
+    <!-- Nouvelles couleurs pour l'application -->
+    <color name="blue_primary">#FF2196F3</color>
+    <color name="blue_dark">#FF1976D2</color>
+    <color name="blue_light">#FFBBDEFB</color>
+    
+    <color name="orange_accent">#FFFF9800</color>
+    <color name="orange_dark">#FFF57C00</color>
+    <color name="blue_accent">#FF2196F3</color>
+    
+    <color name="green_success">#FF4CAF50</color>
+    <color name="red_error">#FFF44336</color>
+    <color name="red_delete">#FFE53935</color>
+    
+    <color name="gray_light">#FFF5F5F5</color>
+    <color name="gray_medium">#FFE0E0E0</color>
+    <color name="gray_dark">#FF757575</color>
+    
+    <color name="light_gray_background">#FF303030</color> <!-- Gris foncé -->
+    <color name="card_background">#FF424242</color> <!-- Gris foncé pour les cards -->
+    
+    <!-- Couleurs pour les boutons des dialogues -->
+    <color name="blue_button">#FF2196F3</color> <!-- Bleu pour les boutons positifs -->
+    <color name="red_button">#FFF44336</color> <!-- Rouge pour les boutons négatifs -->
+    <color name="orange_button">#FFFF9800</color> <!-- Orange pour les boutons neutres -->
+</resources>

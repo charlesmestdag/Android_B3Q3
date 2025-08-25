@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/nav_class_list">
+
+    <fragment
+        android:id="@+id/nav_class_list"
+        android:name="com.mestdag.gestionpointsetudiants.fragment.ClassListFragment"
+        android:label="Liste des Classes">
+        <action
+            android:id="@+id/action_class_list_to_student_list"
+            app:destination="@id/nav_student_list" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_student_list"
+        android:name="com.mestdag.gestionpointsetudiants.fragment.StudentListFragment"
+        android:label="Liste des Étudiants">
+        <argument
+            android:name="className"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_student_list_to_course_list"
+            app:destination="@id/nav_course_list" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_course_list"
+        android:name="com.mestdag.gestionpointsetudiants.fragment.CourseListFragment"
+        android:label="Liste des Cours">
+        <argument
+            android:name="className"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_course_list_to_evaluation_list"
+            app:destination="@id/nav_evaluation_list" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_evaluation_list"
+        android:name="com.mestdag.gestionpointsetudiants.fragment.EvaluationListFragment"
+        android:label="Liste des Évaluations">
+        <argument
+            android:name="courseId"
+            app:argType="long" />
+        <argument
+            android:name="courseName"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_evaluation_list_to_note_entry"
+            app:destination="@id/nav_note_entry" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_note_entry"
+        android:name="com.mestdag.gestionpointsetudiants.fragment.NoteEntryFragment"
+        android:label="Saisie des Notes">
+        <argument
+            android:name="evaluationId"
+            app:argType="long" />
+        <argument
+            android:name="studentId"
+            app:argType="long" />
+        <argument
+            android:name="studentName"
+            app:argType="string" />
+    </fragment>
+    
+    <fragment
+        android:id="@+id/nav_forced_grade"
+        android:name="com.mestdag.gestionpointsetudiants.fragment.ForcedGradeFragment"
+        android:label="Notes Forcées">
+        <argument
+            android:name="studentId"
+            app:argType="long" />
+    </fragment>
+</navigation>

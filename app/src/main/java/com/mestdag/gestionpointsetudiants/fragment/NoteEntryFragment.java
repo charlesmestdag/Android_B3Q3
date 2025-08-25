@@ -122,7 +122,7 @@ public class NoteEntryFragment extends Fragment {
         TextView titleView = getView().findViewById(R.id.tv_note_title);
         if (titleView != null) {
             String title = "Notes - " + evaluationName + " (/" + (int)evaluationMaxPoints + ")";
-            title += "\nMoyenne pondérée: " + GradeUtils.formatGrade(average) + " (" + gradedStudents + "/" + totalStudents + " étudiants notés)";
+            title += "\nMoyenne pondérée: " + GradeUtils.formatGrade(average);
             titleView.setText(title);
         }
     }

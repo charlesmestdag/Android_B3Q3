@@ -7,16 +7,18 @@ import com.mestdag.gestionpointsetudiants.model.Evaluation;
 import com.mestdag.gestionpointsetudiants.model.Note;
 import com.mestdag.gestionpointsetudiants.model.Course;
 import com.mestdag.gestionpointsetudiants.model.Student;
-import com.mestdag.gestionpointsetudiants.model.EvaluationRepository;
-import com.mestdag.gestionpointsetudiants.model.NoteRepository;
-import com.mestdag.gestionpointsetudiants.model.StudentRepository;
-import com.mestdag.gestionpointsetudiants.model.CourseRepository;
-import com.mestdag.gestionpointsetudiants.model.ForcedGradeRepository;
+import com.mestdag.gestionpointsetudiants.repository.EvaluationRepository;
+import com.mestdag.gestionpointsetudiants.repository.NoteRepository;
+import com.mestdag.gestionpointsetudiants.repository.StudentRepository;
+import com.mestdag.gestionpointsetudiants.repository.CourseRepository;
+import com.mestdag.gestionpointsetudiants.repository.ForcedGradeRepository;
 import com.mestdag.gestionpointsetudiants.database.AppDatabase;
 import com.mestdag.gestionpointsetudiants.utils.EvaluationFactory;
 import com.mestdag.gestionpointsetudiants.utils.EvaluationCalculator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * ViewModel pour gérer les évaluations - Améliore l'architecture MVC
@@ -35,6 +37,7 @@ public class EvaluationViewModel extends ViewModel {
     private CourseRepository courseRepository;
     private ForcedGradeRepository forcedGradeRepository;
     private long courseId;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     
     public EvaluationViewModel() {
         evaluations = new MutableLiveData<>();
@@ -82,7 +85,7 @@ public class EvaluationViewModel extends ViewModel {
         isLoading.postValue(true);
         errorMessage.postValue(null);
         
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 List<Evaluation> rawEvaluations = evaluationRepository.getEvaluationsByCourse(courseId);
                 List<Evaluation> typedEvaluations = EvaluationFactory.convertToTypedEvaluations(rawEvaluations);
@@ -105,7 +108,7 @@ public class EvaluationViewModel extends ViewModel {
             } finally {
                 isLoading.postValue(false);
             }
-        }).start();
+        });
     }
     
     /**
@@ -188,7 +191,7 @@ public class EvaluationViewModel extends ViewModel {
         isLoading.postValue(true);
         errorMessage.postValue(null);
         
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Evaluation newEvaluation = EvaluationFactory.createMainEvaluation(name, courseId);
                 evaluationRepository.insert(newEvaluation);
@@ -199,7 +202,7 @@ public class EvaluationViewModel extends ViewModel {
                 errorMessage.postValue("Erreur lors de l'ajout: " + e.getMessage());
                 isLoading.postValue(false);
             }
-        }).start();
+        });
     }
     
     /**
@@ -211,7 +214,7 @@ public class EvaluationViewModel extends ViewModel {
         isLoading.postValue(true);
         errorMessage.postValue(null);
         
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Evaluation newEvaluation = EvaluationFactory.createSubEvaluation(name, points, parentId, courseId);
                 evaluationRepository.insert(newEvaluation);
@@ -222,7 +225,7 @@ public class EvaluationViewModel extends ViewModel {
                 errorMessage.postValue("Erreur lors de l'ajout: " + e.getMessage());
                 isLoading.postValue(false);
             }
-        }).start();
+        });
     }
     
     /**
@@ -231,7 +234,7 @@ public class EvaluationViewModel extends ViewModel {
     public void calculateCourseStatistics() {
         if (database == null || courseId == -1) return;
         
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 List<Evaluation> currentEvaluations = evaluations.getValue();
                 List<Note> allNotes = noteRepository.getAllNotes();
@@ -243,12 +246,12 @@ public class EvaluationViewModel extends ViewModel {
             } catch (Exception e) {
                 errorMessage.postValue("Erreur lors du calcul: " + e.getMessage());
             }
-        }).start();
+        });
     }
 
     public void computeCourseAverages(long studentId) {
         if (database == null || courseId == -1) return;
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 List<Evaluation> allEvaluations = evaluationRepository.getEvaluationsByCourse(courseId);
                 List<Evaluation> mainEvaluations = new java.util.ArrayList<>();
@@ -287,7 +290,7 @@ public class EvaluationViewModel extends ViewModel {
             } catch (Exception e) {
                 errorMessage.postValue("Erreur moyennes cours: " + e.getMessage());
             }
-        }).start();
+        });
     }
     
     /**

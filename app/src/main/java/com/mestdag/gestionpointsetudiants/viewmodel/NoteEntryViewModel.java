@@ -11,14 +11,16 @@ import com.mestdag.gestionpointsetudiants.model.Evaluation;
 import com.mestdag.gestionpointsetudiants.model.ForcedGrade;
 import com.mestdag.gestionpointsetudiants.model.Note;
 import com.mestdag.gestionpointsetudiants.model.Student;
-import com.mestdag.gestionpointsetudiants.model.CourseRepository;
-import com.mestdag.gestionpointsetudiants.model.EvaluationRepository;
-import com.mestdag.gestionpointsetudiants.model.ForcedGradeRepository;
-import com.mestdag.gestionpointsetudiants.model.NoteRepository;
-import com.mestdag.gestionpointsetudiants.model.StudentRepository;
+import com.mestdag.gestionpointsetudiants.repository.CourseRepository;
+import com.mestdag.gestionpointsetudiants.repository.EvaluationRepository;
+import com.mestdag.gestionpointsetudiants.repository.ForcedGradeRepository;
+import com.mestdag.gestionpointsetudiants.repository.NoteRepository;
+import com.mestdag.gestionpointsetudiants.repository.StudentRepository;
 import com.mestdag.gestionpointsetudiants.utils.WeightedGradeCalculator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class NoteEntryViewModel extends AndroidViewModel {
     private final AppDatabase database;
@@ -33,6 +35,7 @@ public class NoteEntryViewModel extends AndroidViewModel {
     private long evaluationId = -1;
     private double evaluationMaxPoints = 20.0;
     private boolean initialized = false;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public NoteEntryViewModel(@NonNull Application application) {
         super(application);
@@ -64,7 +67,7 @@ public class NoteEntryViewModel extends AndroidViewModel {
     }
 
     public void load() {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Evaluation evaluation = evaluationRepository.getEvaluationById(evaluationId);
                 if (evaluation == null) return;
@@ -117,11 +120,11 @@ public class NoteEntryViewModel extends AndroidViewModel {
                 double average = validGradesCount > 0 ? totalGrades / validGradesCount : 0;
                 statsLiveData.postValue(new StatsUi(average, validGradesCount, allStudents.size()));
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void saveGrade(long studentId, double grade) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Note note = new Note();
                 note.setEvaluationId(evaluationId);
@@ -130,30 +133,30 @@ public class NoteEntryViewModel extends AndroidViewModel {
                 noteRepository.insertOrUpdate(note);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void forceGrade(long studentId, double grade, String reason) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 ForcedGrade forcedGrade = new ForcedGrade(evaluationId, studentId, grade, reason);
                 forcedGradeRepository.insert(forcedGrade);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void removeForcedGrade(long studentId) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 forcedGradeRepository.deleteForcedGrade(evaluationId, studentId);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void reloadStatistics() {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Evaluation evaluation = evaluationRepository.getEvaluationById(evaluationId);
                 if (evaluation == null) return;
@@ -190,7 +193,7 @@ public class NoteEntryViewModel extends AndroidViewModel {
                 double average = validGradesCount > 0 ? totalGrades / validGradesCount : 0;
                 statsLiveData.postValue(new StatsUi(average, validGradesCount, current.size()));
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public static class StudentGradeInfo {

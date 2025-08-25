@@ -7,7 +7,9 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.mestdag.gestionpointsetudiants.database.AppDatabase;
 import com.mestdag.gestionpointsetudiants.model.ForcedGrade;
-import com.mestdag.gestionpointsetudiants.model.ForcedGradeRepository;
+import com.mestdag.gestionpointsetudiants.repository.ForcedGradeRepository;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class ForcedGradeViewModel extends AndroidViewModel {
     private final AppDatabase database;
     private final ForcedGradeRepository forcedGradeRepository;
     private final MutableLiveData<List<ForcedGrade>> forcedGradesLiveData = new MutableLiveData<>(new ArrayList<>());
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private long evaluationId = -1;
 
     public ForcedGradeViewModel(@NonNull Application application) {
@@ -32,30 +35,30 @@ public class ForcedGradeViewModel extends AndroidViewModel {
 
     public void load() {
         if (evaluationId == -1) return;
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 List<ForcedGrade> grades = forcedGradeRepository.getForcedGradesByEvaluation(evaluationId);
                 forcedGradesLiveData.postValue(grades);
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void addOrUpdate(long studentId, double grade, String reason) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 forcedGradeRepository.insert(new ForcedGrade(evaluationId, studentId, grade, reason));
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void remove(long studentId) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 forcedGradeRepository.deleteForcedGrade(evaluationId, studentId);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 }
 

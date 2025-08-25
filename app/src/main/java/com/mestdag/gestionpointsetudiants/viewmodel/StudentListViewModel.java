@@ -7,9 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.mestdag.gestionpointsetudiants.database.AppDatabase;
 import com.mestdag.gestionpointsetudiants.model.Student;
-import com.mestdag.gestionpointsetudiants.model.StudentRepository;
+import com.mestdag.gestionpointsetudiants.repository.StudentRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class StudentListViewModel extends AndroidViewModel {
     private final AppDatabase database;
@@ -17,6 +19,7 @@ public class StudentListViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Student>> studentsLiveData = new MutableLiveData<>(new ArrayList<>());
     private String className = "";
     private boolean initialized = false;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public StudentListViewModel(@NonNull Application application) {
         super(application);
@@ -35,16 +38,16 @@ public class StudentListViewModel extends AndroidViewModel {
 
     public void load() {
         if (className == null || className.isEmpty()) return;
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 List<Student> students = studentRepository.getStudentsByClass(className);
                 studentsLiveData.postValue(students);
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void addStudent(String lastName, String firstName) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Student newStudent = new Student();
                 newStudent.setFirstName(firstName != null ? firstName : "");
@@ -53,16 +56,16 @@ public class StudentListViewModel extends AndroidViewModel {
                 studentRepository.insert(newStudent);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void deleteStudent(Student student) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 studentRepository.delete(student);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 }
 

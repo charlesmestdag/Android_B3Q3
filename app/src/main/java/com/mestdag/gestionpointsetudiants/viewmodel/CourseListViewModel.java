@@ -7,9 +7,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.mestdag.gestionpointsetudiants.database.AppDatabase;
 import com.mestdag.gestionpointsetudiants.model.Course;
-import com.mestdag.gestionpointsetudiants.model.CourseRepository;
+import com.mestdag.gestionpointsetudiants.repository.CourseRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class CourseListViewModel extends AndroidViewModel {
     private final AppDatabase database;
@@ -17,6 +19,7 @@ public class CourseListViewModel extends AndroidViewModel {
     private final MutableLiveData<List<Course>> coursesLiveData = new MutableLiveData<>(new ArrayList<>());
     private String className = "";
     private boolean initialized = false;
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public CourseListViewModel(@NonNull Application application) {
         super(application);
@@ -35,16 +38,16 @@ public class CourseListViewModel extends AndroidViewModel {
 
     public void load() {
         if (className == null || className.isEmpty()) return;
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 List<Course> courses = courseRepository.getCoursesByClass(className);
                 coursesLiveData.postValue(courses);
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void addCourse(String name) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 Course newCourse = new Course();
                 newCourse.setName(name != null ? name : "");
@@ -52,16 +55,16 @@ public class CourseListViewModel extends AndroidViewModel {
                 courseRepository.insert(newCourse);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void deleteCourse(Course course) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 courseRepository.delete(course);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 }
 

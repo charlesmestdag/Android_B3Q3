@@ -7,14 +7,17 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.mestdag.gestionpointsetudiants.database.AppDatabase;
 import com.mestdag.gestionpointsetudiants.model.ClassEntity;
-import com.mestdag.gestionpointsetudiants.model.ClassRepository;
+import com.mestdag.gestionpointsetudiants.repository.ClassRepository;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class ClassListViewModel extends AndroidViewModel {
     private final AppDatabase database;
     private final ClassRepository classRepository;
     private final MutableLiveData<List<ClassEntity>> classesLiveData = new MutableLiveData<>(new ArrayList<>());
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
 
     public ClassListViewModel(@NonNull Application application) {
         super(application);
@@ -25,32 +28,32 @@ public class ClassListViewModel extends AndroidViewModel {
     public LiveData<List<ClassEntity>> getClasses() { return classesLiveData; }
 
     public void load() {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 List<ClassEntity> classes = classRepository.getAllClasses();
                 classesLiveData.postValue(classes);
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void addClass(String className) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 ClassEntity newClass = new ClassEntity();
                 newClass.setName(className != null ? className : "");
                 classRepository.insert(newClass);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 
     public void deleteClass(ClassEntity classEntity) {
-        new Thread(() -> {
+        executor.execute(() -> {
             try {
                 classRepository.delete(classEntity);
                 load();
             } catch (Exception ignored) {}
-        }).start();
+        });
     }
 }
 

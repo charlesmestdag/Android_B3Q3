@@ -67,14 +67,6 @@ cd GestionPointsEtudiants
 5. **Encoder les notes** → Saisie avec validation automatique
 6. **Consulter les moyennes** → Calcul automatique avec pondération
 
-## 🔧 Fonctionnalités techniques
-
-- **Précision** : Sauvegarde au centième, affichage au demi-point
-- **Validation** : Contrôle des plages et formats en temps réel
-- **Calcul** : Moyennes pondérées automatiques
-- **Hiérarchie** : Support des sous-évaluations
-- **Thème sombre** : Interface optimisée pour le confort visuel
-
 ## 📋 Statut du projet
 
 | Fonctionnalité | Statut |

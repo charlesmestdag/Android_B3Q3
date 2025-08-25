@@ -91,23 +91,8 @@ cd GestionPointsEtudiants
 | Interface utilisateur | ✅ Terminé |
 | Notes forcées | ✅ Terminé |
 
-## 🤝 Contribution
-
-```bash
-# Créer une branche feature
-git checkout -b feature/nom-fonctionnalite
-
-# Commiter les changes
-git commit -m "feat: description de la fonctionnalité"
-
-# Proposer une Pull Request
-git push origin feature/nom-fonctionnalite
-```
-
 ## 📄 Licence
 
 Projet développé dans un cadre éducatif.
 
 ---
-
-⭐ **N'hésitez pas à star le projet si vous le trouvez utile !**

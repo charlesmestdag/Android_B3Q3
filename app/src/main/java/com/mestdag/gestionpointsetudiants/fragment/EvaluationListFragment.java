@@ -34,6 +34,7 @@ public class EvaluationListFragment extends Fragment {
     private EvaluationViewModel viewModel;
     private RecyclerView recyclerView;
     private EvaluationAdapter adapter;
+    private TextView tvStudentAvg, tvClassAvg;
     private List<Evaluation> evaluationList;
 
     @Override
@@ -76,6 +77,10 @@ public class EvaluationListFragment extends Fragment {
             recyclerView.setAdapter(adapter);
         }
 
+        // Averages UI
+        tvStudentAvg = view.findViewById(R.id.tv_student_course_average);
+        tvClassAvg = view.findViewById(R.id.tv_class_course_average);
+
         // Bouton d'ajout
         Button btnAddEvaluation = view.findViewById(R.id.btn_add_evaluation);
         if (btnAddEvaluation != null) {
@@ -84,6 +89,9 @@ public class EvaluationListFragment extends Fragment {
 
         // Observer les données du ViewModel
         observeViewModel();
+        if (studentId != -1) {
+            viewModel.computeCourseAverages(studentId);
+        }
 
         return view;
     }
@@ -227,6 +235,14 @@ public class EvaluationListFragment extends Fragment {
         // Observer l'état de chargement
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             // Ici on pourrait afficher un indicateur de chargement
+        });
+
+        viewModel.getStudentCourseAverage().observe(getViewLifecycleOwner(), avg -> {
+            if (tvStudentAvg != null) tvStudentAvg.setText("Moyenne élève: " + String.format(java.util.Locale.getDefault(), "%.2f", avg));
+        });
+
+        viewModel.getClassCourseAverage().observe(getViewLifecycleOwner(), avg -> {
+            if (tvClassAvg != null) tvClassAvg.setText("Moyenne classe: " + String.format(java.util.Locale.getDefault(), "%.2f", avg));
         });
     }
 

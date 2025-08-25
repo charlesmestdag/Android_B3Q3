@@ -7,17 +7,20 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.mestdag.gestionpointsetudiants.database.AppDatabase;
 import com.mestdag.gestionpointsetudiants.model.ForcedGrade;
+import com.mestdag.gestionpointsetudiants.model.ForcedGradeRepository;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ForcedGradeViewModel extends AndroidViewModel {
     private final AppDatabase database;
+    private final ForcedGradeRepository forcedGradeRepository;
     private final MutableLiveData<List<ForcedGrade>> forcedGradesLiveData = new MutableLiveData<>(new ArrayList<>());
     private long evaluationId = -1;
 
     public ForcedGradeViewModel(@NonNull Application application) {
         super(application);
         database = AppDatabase.getInstance(application.getApplicationContext());
+        forcedGradeRepository = new ForcedGradeRepository(database.forcedGradeDao());
     }
 
     public LiveData<List<ForcedGrade>> getForcedGrades() { return forcedGradesLiveData; }
@@ -31,7 +34,7 @@ public class ForcedGradeViewModel extends AndroidViewModel {
         if (evaluationId == -1) return;
         new Thread(() -> {
             try {
-                List<ForcedGrade> grades = database.forcedGradeDao().getForcedGradesByEvaluation(evaluationId);
+                List<ForcedGrade> grades = forcedGradeRepository.getForcedGradesByEvaluation(evaluationId);
                 forcedGradesLiveData.postValue(grades);
             } catch (Exception ignored) {}
         }).start();
@@ -40,7 +43,7 @@ public class ForcedGradeViewModel extends AndroidViewModel {
     public void addOrUpdate(long studentId, double grade, String reason) {
         new Thread(() -> {
             try {
-                database.forcedGradeDao().insert(new ForcedGrade(evaluationId, studentId, grade, reason));
+                forcedGradeRepository.insert(new ForcedGrade(evaluationId, studentId, grade, reason));
                 load();
             } catch (Exception ignored) {}
         }).start();
@@ -49,7 +52,7 @@ public class ForcedGradeViewModel extends AndroidViewModel {
     public void remove(long studentId) {
         new Thread(() -> {
             try {
-                database.forcedGradeDao().deleteForcedGrade(evaluationId, studentId);
+                forcedGradeRepository.deleteForcedGrade(evaluationId, studentId);
                 load();
             } catch (Exception ignored) {}
         }).start();

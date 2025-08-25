@@ -7,16 +7,19 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.mestdag.gestionpointsetudiants.database.AppDatabase;
 import com.mestdag.gestionpointsetudiants.model.ClassEntity;
+import com.mestdag.gestionpointsetudiants.model.ClassRepository;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ClassListViewModel extends AndroidViewModel {
     private final AppDatabase database;
+    private final ClassRepository classRepository;
     private final MutableLiveData<List<ClassEntity>> classesLiveData = new MutableLiveData<>(new ArrayList<>());
 
     public ClassListViewModel(@NonNull Application application) {
         super(application);
         database = AppDatabase.getInstance(application.getApplicationContext());
+        classRepository = new ClassRepository(application.getApplicationContext());
     }
 
     public LiveData<List<ClassEntity>> getClasses() { return classesLiveData; }
@@ -24,7 +27,7 @@ public class ClassListViewModel extends AndroidViewModel {
     public void load() {
         new Thread(() -> {
             try {
-                List<ClassEntity> classes = database.classDao().getAllClasses();
+                List<ClassEntity> classes = classRepository.getAllClasses();
                 classesLiveData.postValue(classes);
             } catch (Exception ignored) {}
         }).start();
@@ -35,7 +38,7 @@ public class ClassListViewModel extends AndroidViewModel {
             try {
                 ClassEntity newClass = new ClassEntity();
                 newClass.setName(className != null ? className : "");
-                database.classDao().insert(newClass);
+                classRepository.insert(newClass);
                 load();
             } catch (Exception ignored) {}
         }).start();
@@ -44,7 +47,7 @@ public class ClassListViewModel extends AndroidViewModel {
     public void deleteClass(ClassEntity classEntity) {
         new Thread(() -> {
             try {
-                database.classDao().delete(classEntity);
+                classRepository.delete(classEntity);
                 load();
             } catch (Exception ignored) {}
         }).start();

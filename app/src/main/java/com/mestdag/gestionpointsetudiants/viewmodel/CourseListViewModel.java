@@ -7,11 +7,13 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import com.mestdag.gestionpointsetudiants.database.AppDatabase;
 import com.mestdag.gestionpointsetudiants.model.Course;
+import com.mestdag.gestionpointsetudiants.model.CourseRepository;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CourseListViewModel extends AndroidViewModel {
     private final AppDatabase database;
+    private final CourseRepository courseRepository;
     private final MutableLiveData<List<Course>> coursesLiveData = new MutableLiveData<>(new ArrayList<>());
     private String className = "";
     private boolean initialized = false;
@@ -19,6 +21,7 @@ public class CourseListViewModel extends AndroidViewModel {
     public CourseListViewModel(@NonNull Application application) {
         super(application);
         database = AppDatabase.getInstance(application.getApplicationContext());
+        courseRepository = new CourseRepository(application.getApplicationContext());
     }
 
     public LiveData<List<Course>> getCourses() { return coursesLiveData; }
@@ -34,7 +37,7 @@ public class CourseListViewModel extends AndroidViewModel {
         if (className == null || className.isEmpty()) return;
         new Thread(() -> {
             try {
-                List<Course> courses = database.courseDao().getCoursesByClass(className);
+                List<Course> courses = courseRepository.getCoursesByClass(className);
                 coursesLiveData.postValue(courses);
             } catch (Exception ignored) {}
         }).start();
@@ -46,7 +49,7 @@ public class CourseListViewModel extends AndroidViewModel {
                 Course newCourse = new Course();
                 newCourse.setName(name != null ? name : "");
                 newCourse.setClassName(className);
-                database.courseDao().insert(newCourse);
+                courseRepository.insert(newCourse);
                 load();
             } catch (Exception ignored) {}
         }).start();
@@ -55,7 +58,7 @@ public class CourseListViewModel extends AndroidViewModel {
     public void deleteCourse(Course course) {
         new Thread(() -> {
             try {
-                database.courseDao().delete(course);
+                courseRepository.delete(course);
                 load();
             } catch (Exception ignored) {}
         }).start();

@@ -2,11 +2,6 @@
 
 Application Android native pour la gestion des notes et évaluations d'étudiants par les enseignants.
 
-[![Android](https://img.shields.io/badge/Platform-Android-green.svg)](https://developer.android.com)
-[![Java](https://img.shields.io/badge/Language-Java-orange.svg)](https://www.java.com)
-[![MVVM](https://img.shields.io/badge/Architecture-MVVM-blue.svg)](https://developer.android.com/jetpack/guide)
-[![Room](https://img.shields.io/badge/Database-Room-purple.svg)](https://developer.android.com/training/data-storage/room)
-
 ## ✨ Fonctionnalités
 
 - 🏫 **Gestion des classes** : Organisation par blocs (BA1, BA2, BA3, MA1, MA2)
